@@ -2,6 +2,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useFetchRooms } from "./useFetchRooms";
 import RoomList from "./RoomList";
 import type { Room } from "./types";
+import type { BookingSummary } from "./types/booking";
+import { BookingForm } from "./components/BookingForm";
 import "./styles.css";
 
 type SortBy = "price" | "rating";
@@ -15,7 +17,8 @@ export default function App() {
   const [maxPrice, setMaxPrice] = useState<number>(MAX_PRICE);
   const [minCapacity, setMinCapacity] = useState<number>(1);
   const [sortBy, setSortBy] = useState<SortBy>("price");
-  const [booked, setBooked] = useState<Room | null>(null);
+  const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
+  const [confirmation, setConfirmation] = useState<BookingSummary | null>(null);
 
   // ფასის სლაიდერის DOM ელემენტი
   const sliderRef = useRef<HTMLInputElement>(null);
@@ -38,7 +41,15 @@ export default function App() {
     );
   }, [rooms, maxPrice, minCapacity, sortBy]);
 
-  const handleBook = (room: Room) => setBooked(room);
+   const handleBook = (room: Room) => {
+    setConfirmation(null);
+    setSelectedRoom(room);
+  };
+
+  const handleBooked = (summary: BookingSummary) => {
+    setConfirmation(summary);
+    setSelectedRoom(null);
+  };
 
   const resetFilters = () => {
     setMaxPrice(MAX_PRICE);
@@ -95,13 +106,29 @@ export default function App() {
         </button>
       </section>
 
-      {booked && (
+          {confirmation && (
         <div className="notice">
-          ✅ დაჯავშნილია: <strong>{booked.name}</strong> (${booked.price} / ღამე)
-          <button onClick={() => setBooked(null)}>✕</button>
+          ✅ დაჯავშნილია: <strong>{confirmation.room.name}</strong>,{" "}
+          {confirmation.values.checkIn} → {confirmation.values.checkOut}{" "}
+          ({confirmation.price.nights} ღამე), სულ: {confirmation.price.total.toFixed(2)} ₾
+          <button onClick={() => setConfirmation(null)}>✕</button>
         </div>
       )}
 
+      {selectedRoom && (
+        <section>
+          <BookingForm
+            key={selectedRoom.id}
+            rooms={rooms}
+            initialRoomId={selectedRoom.id}
+            onBooked={handleBooked}
+          />
+          <button className="btn btn--ghost" onClick={() => setSelectedRoom(null)}>
+            გაუქმება
+          </button>
+        </section>
+      )}
+      
       {loading && <p>იტვირთება...</p>}
       {error && <p className="error">{error}</p>}
       {!loading && !error && (
