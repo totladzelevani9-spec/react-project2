@@ -110,7 +110,7 @@ export function BookingForm({ rooms, initialRoomId, onBooked }: BookingFormProps
         <label htmlFor="roomId">ნომრის ტიპი</label>
                   <select id="roomId" name="roomId" value={values.roomId} onChange={handleChange} onBlur={handleBlur}>
             <option value="">აირჩიეთ ნომერი</option>
-            {rooms.map((r) => (
+                      {rooms.filter((r) => r.status === "Available").map((r) => (
               <option key={r.id} value={String(r.id)}>
                 {r.name} — {r.price} ₾ / ღამე
               </option>

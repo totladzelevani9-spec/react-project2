@@ -16,7 +16,7 @@ function RoomCard({ room, onBook }: RoomCardProps) {
         <h3>{room.name}</h3>
         <p>👥 ტევადობა: {room.capacity}</p>
         <p>⭐ რეიტინგი: {room.rating.toFixed(1)}</p>
-        <p className="room-card__price">${room.price} / ღამე</p>
+                 <p className="room-card__price">{room.price} ₾ / ღამე</p>
 
         {/* პირობითი რენდერინგი სტატუსის მიხედვით */}
         {isAvailable ? (

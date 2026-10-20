@@ -64,7 +64,7 @@ export default function App() {
 
       <section className="filters">
         <label>
-          მაქს. ფასი: <strong>${maxPrice}</strong>
+                   მაქს. ფასი: <strong>{maxPrice} ₾</strong>
           <input
             ref={sliderRef}
             type="range"
